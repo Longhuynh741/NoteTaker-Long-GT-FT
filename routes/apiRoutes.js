@@ -78,12 +78,12 @@ module.exports = function (app) {
                     message: "Unable to get note.",
                 });
             }
-            const datainfo = JSON.parse(data)
-            updatedData = datainfo.filter(function (data) {
+            const noteData = JSON.parse(data)
+            updatenote = noteData.filter(function (data) {
                 return data.id != req.params.id;
             });
-            console.log(updatedData);
-            fs.writeFile("./db/db.json", JSON.stringify(updatedData), (err) => {
+            console.log(updatenote);
+            fs.writeFile("./db/db.json", JSON.stringify(updatenote), (err) => {
                 if (err) {
                     console.log(err);
                     return res.json({
@@ -94,7 +94,7 @@ module.exports = function (app) {
                 }
                 res.json({
                     error: false,
-                    data: updatedData,
+                    data: updatenote,
                     message: "Successfully added new note",
                 })
             })
