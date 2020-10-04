@@ -1,5 +1,6 @@
 //Npm Dependencies
 const express = require("express");
+const fs = require("fs");
 const path = require("path");
 
 //create an "express " server
@@ -15,8 +16,8 @@ app.use(express.json());
 
 
 //router 
-require("./routes/apiRoutes")(app);
-require("./routes/htmlRoutes")(app);
+require(`./routes/apiRoutes`)(app);
+require(`./routes/htmlRoutes`)(app);
 
 //listener
 app.listen(PORT, function() {

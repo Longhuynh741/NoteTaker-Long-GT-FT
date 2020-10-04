@@ -55,10 +55,10 @@ module.exports = function (app) {
                     const newNote = {
                         title: db[i].title,
                         text: db[i].text,
-                        id: newDB.length
+                        id: notesArray.length
                     };
     
-                    newDB.push(newNote);
+                    notesArray.push(newNote);
                 }
             }
     
