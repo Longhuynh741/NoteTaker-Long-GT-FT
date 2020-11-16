@@ -1,25 +1,60 @@
-//Npm Dependencies
+// Requiring dependencies
 const express = require("express");
 const fs = require("fs");
 const path = require("path");
 
-//create an "express " server
+// Creating a port, setting up express
 const app = express();
+const PORT = process.env.PORT || 8080;
 
-
-//set an initial port
-var PORT = process.env.PORT || 8080;
-
-//Set up Express app to handle data parsing
-app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(express.static("public"));
+app.use(express.urlencoded({ extended: true }));
 
+// Starting the server
+app.listen(PORT, function () {
+  console.log(`Listening on Port: ${PORT}`);
+});
 
-//router 
-require(`./routes/apiRoutes`)(app);
-require(`./routes/htmlRoutes`)(app);
+// Getting index.html file
+app.get("/", function (req, res) {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
 
-//listener
-app.listen(PORT, function() {
-    console.log("App listening on PORT: " + PORT);
+// Getting notes.html file
+app.get("/notes", function (req, res) {
+  res.sendFile(path.join(__dirname, "public", "notes.html"));
+});
+
+// Getting the db.json file
+app.get("/api/notes", function (req, res) {
+  return res.sendFile(path.join(__dirname, "db/db.json"));
+});
+
+// Saving notes that the user adds and renders them
+app.post("/api/notes", function (req, res) {
+  const newNote = req.body;
+  newNoteData = fs.readFileSync("./db/db.json", "utf-8");
+  newNoteData = JSON.parse(newNoteData);
+  newNote.id = newNoteData.length;
+  newNoteData.push(newNote);
+  newNoteData = JSON.stringify(newNoteData);
+  fs.writeFile("./db/db.json", newNoteData, "utf-8", (err) => {
+    if (err) throw err;
   });
+  res.json(JSON.parse(newNoteData));
+});
+
+app.delete("/api/notes/:id", function (req, res) {
+  const deletedNote = req.params.id;
+  newNoteData = fs.readFileSync("./db/db.json", "utf-8");
+  newNoteData = JSON.parse(newNoteData);
+  newNoteData = newNoteData.filter(function (note) {
+    return note.id != deletedNote;
+  });
+  newNoteData = JSON.stringify(newNoteData);
+  fs.writeFile("./db/db.json", newNoteData, "utf-8", (err) => {
+    if (err) throw err;
+  });
+  res.json(JSON.parse(newNoteData));
+});
